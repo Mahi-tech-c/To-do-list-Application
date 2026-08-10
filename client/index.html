@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Project Flow</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand-icon">
+          <span></span>
+        </div>
+        <div>
+          <h1>Project Flow</h1>
+          <p class="brand-subtitle">Task Workspace</p>
+        </div>
+      </div>
+
+      <nav class="nav">
+        <div class="nav-label">Workspace</div>
+        <a href="#" class="nav-link active" data-view="tasks">
+          <span class="nav-icon">▦</span>
+          <span>My Tasks</span>
+        </a>
+        <a href="#" class="nav-link" data-view="calendar">
+          <span class="nav-icon">◌</span>
+          <span>Calendar</span>
+        </a>
+        <a href="#" class="nav-link" data-view="reports">
+          <span class="nav-icon">☼</span>
+          <span>Reports</span>
+        </a>
+      </nav>
+
+      <div class="workspace-card">
+        <div class="workspace-status">
+          <span class="online-dot"></span>
+          <span>Workspace online</span>
+        </div>
+        <div class="workspace-stats">
+          <div>
+            <span id="taskCount">0</span>
+            <small>Total Tasks</small>
+          </div>
+          <div>
+            <span id="completedCount">0</span>
+            <small>Completed</small>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <main class="main-content">
+      <header class="topbar">
+        <div>
+          <div class="page-kicker">Operations Dashboard</div>
+          <h2 class="page-title">Task Management</h2>
+        </div>
+        <div class="topbar-actions">
+          <button class="btn btn-outline" id="logoutBtn">Logout</button>
+          <button class="btn btn-primary" id="openTaskModal">+ Create Task</button>
+        </div>
+      </header>
+
+      <section class="auth-strip" id="authSection">
+        <div class="auth-card">
+          <div class="auth-header">
+            <div>
+              <span class="section-label">Authentication</span>
+              <h3>Welcome back</h3>
+            </div>
+            <span class="tag success">JWT Secure</span>
+          </div>
+
+          <div class="auth-grid">
+            <form id="loginForm" class="form-card compact">
+              <h4>Login</h4>
+              <label>
+                <span>Email</span>
+                <input type="email" name="email" required placeholder="admin@flow.com">
+              </label>
+              <label>
+                <span>Password</span>
+                <input type="password" name="password" required minlength="6">
+              </label>
+              <button class="btn btn-primary full" type="submit">Login</button>
+            </form>
+
+            <form id="registerForm" class="form-card compact">
+              <h4>Create account</h4>
+              <label>
+                <span>Name</span>
+                <input type="text" name="name" required minlength="2" placeholder="Your name">
+              </label>
+              <label>
+                <span>Email</span>
+                <input type="email" name="email" required placeholder="you@example.com">
+              </label>
+              <label>
+                <span>Password</span>
+                <input type="password" name="password" required minlength="6">
+              </label>
+              <button class="btn btn-secondary full" type="submit">Sign up</button>
+            </form>
+          </div>
+        </div>
+      </section>
+
+      <section class="content-panel" id="tasksSection" style="display:none">
+        <section class="summary-grid">
+          <article class="summary-card">
+            <span class="summary-label">Total Tasks</span>
+            <div class="summary-main" id="totalSummary">0</div>
+            <span class="trend positive">+12% this week</span>
+          </article>
+          <article class="summary-card">
+            <span class="summary-label">In Progress</span>
+            <div class="summary-main" id="progressSummary">0</div>
+            <span class="trend warning">4 active flows</span>
+          </article>
+          <article class="summary-card">
+            <span class="summary-label">Completed</span>
+            <div class="summary-main" id="completedSummary">0</div>
+            <span class="trend positive">On track</span>
+          </article>
+        </section>
+
+        <section class="task-tools">
+          <div class="filter-bar">
+            <select id="statusFilter">
+              <option value="all">All statuses</option>
+              <option value="pending">Pending</option>
+              <option value="in-progress">In-Progress</option>
+              <option value="completed">Completed</option>
+            </select>
+            <select id="sortBy">
+              <option value="createdAt">Sort: Created</option>
+              <option value="status">Sort: Status</option>
+              <option value="title">Sort: Title</option>
+            </select>
+            <select id="sortOrder">
+              <option value="desc">Descending</option>
+              <option value="asc">Ascending</option>
+            </select>
+          </div>
+          <div class="pagination">
+            <button id="prevPage">Prev</button>
+            <span id="pageLabel">Page 1</span>
+            <button id="nextPage">Next</button>
+          </div>
+        </section>
+
+        <section class="task-list-wrapper">
+          <div class="list-header">
+            <div>
+              <span class="section-label">Task Stream</span>
+              <h3>All Tasks</h3>
+            </div>
+            <div class="view-toggles">
+              <button class="icon-button active">☑</button>
+              <button class="icon-button">☰</button>
+            </div>
+          </div>
+
+          <div class="task-list" id="taskList"></div>
+        </section>
+      </section>
+
+      <section class="content-panel view-panel" id="calendarSection" style="display:none">
+        <div class="view-header">
+          <div>
+            <span class="section-label">Calendar</span>
+            <h3>Schedule Overview</h3>
+          </div>
+          <button class="btn btn-primary" id="createFromCalendar">+ Add Task</button>
+        </div>
+        <div class="calendar-wrapper">
+          <div class="calendar-header">
+            <button id="monthPrev" class="icon-button">‹</button>
+            <span id="monthTitle">August 2026</span>
+            <button id="monthNext" class="icon-button">›</button>
+          </div>
+          <div class="calendar-grid" id="calendarGrid"></div>
+        </div>
+      </section>
+
+      <section class="content-panel view-panel" id="reportsSection" style="display:none">
+        <div class="view-header">
+          <div>
+            <span class="section-label">Reports</span>
+            <h3>Performance Snapshot</h3>
+          </div>
+        </div>
+        <section class="report-grid">
+          <article class="report-card">
+            <span class="report-label">Completion Rate</span>
+            <div class="radial-chart">
+              <span id="completionRate">0%</span>
+            </div>
+          </article>
+          <article class="report-card">
+            <span class="report-label">Workflow Distribution</span>
+            <ul class="report-list" id="reportList"></ul>
+          </article>
+          <article class="report-card">
+            <span class="report-label">Priority Actions</span>
+            <ul class="report-list" id="actionList">
+              <li>Review pending work items</li>
+              <li>Move blocked tasks to progress</li>
+              <li>Close completed handoffs</li>
+            </ul>
+          </article>
+        </section>
+      </section>
+    </main>
+  </div>
+
+  <div class="modal-overlay" id="taskModal">
+    <div class="modal-panel">
+      <div class="modal-header">
+        <div>
+          <span class="section-label">Task Details</span>
+          <h3 id="modalTitle">Create Task</h3>
+        </div>
+        <button class="icon-button" id="closeTaskModal">×</button>
+      </div>
+
+      <form id="taskForm">
+        <input type="hidden" id="taskId">
+        <label>
+          <span>Title</span>
+          <input type="text" id="taskTitle" required minlength="2">
+        </label>
+        <label>
+          <span>Description</span>
+          <textarea id="taskDescription" rows="4"></textarea>
+        </label>
+        <label>
+          <span>Status</span>
+          <select id="taskStatus">
+            <option value="pending">Pending</option>
+            <option value="in-progress">In-Progress</option>
+            <option value="completed">Completed</option>
+          </select>
+        </label>
+        <div class="modal-actions">
+          <span id="taskError" class="error-message"></span>
+          <div>
+            <button type="button" class="btn btn-outline" id="cancelTask">Cancel</button>
+            <button type="submit" class="btn btn-primary">Save Task</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
